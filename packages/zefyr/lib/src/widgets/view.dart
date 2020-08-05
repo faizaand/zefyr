@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/zefyr.dart';
 
 import 'code.dart';
 import 'common.dart';
@@ -19,8 +20,10 @@ import 'theme.dart';
 class ZefyrView extends StatefulWidget {
   final NotusDocument document;
   final ZefyrImageDelegate imageDelegate;
+  final LinkDelegate linkDelegate;
 
-  const ZefyrView({Key key, @required this.document, this.imageDelegate})
+  const ZefyrView(
+      {Key key, @required this.document, this.imageDelegate, this.linkDelegate})
       : super(key: key);
 
   @override
@@ -33,16 +36,20 @@ class ZefyrViewState extends State<ZefyrView> {
 
   ZefyrImageDelegate get imageDelegate => widget.imageDelegate;
 
+  LinkDelegate get linkDelegate => widget.linkDelegate;
+
   @override
   void initState() {
     super.initState();
-    _scope = ZefyrScope.view(imageDelegate: widget.imageDelegate);
+    _scope = ZefyrScope.view(
+        imageDelegate: widget.imageDelegate, linkDelegate: widget.linkDelegate);
   }
 
   @override
   void didUpdateWidget(ZefyrView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _scope.imageDelegate = widget.imageDelegate;
+    _scope.linkDelegate = widget.linkDelegate;
   }
 
   @override

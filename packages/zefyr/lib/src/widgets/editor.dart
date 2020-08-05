@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:zefyr/src/widgets/link_delegate.dart';
 
 import 'controller.dart';
 import 'editable_text.dart';
@@ -25,6 +26,7 @@ class ZefyrEditor extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.toolbarDelegate,
     this.imageDelegate,
+    this.linkDelegate,
     this.selectionControls,
     this.physics,
     this.keyboardAppearance,
@@ -59,6 +61,11 @@ class ZefyrEditor extends StatefulWidget {
   /// This delegate is required if embedding images is allowed.
   final ZefyrImageDelegate imageDelegate;
 
+  /// Delegate for handling links.
+  ///
+  /// Without this delegate, links will not work when tapped.
+  final LinkDelegate linkDelegate;
+
   /// Optional delegate for building the text selection handles and toolbar.
   ///
   /// If not provided then platform-specific implementation is used by default.
@@ -83,6 +90,7 @@ class ZefyrEditor extends StatefulWidget {
 
 class _ZefyrEditorState extends State<ZefyrEditor> {
   ZefyrImageDelegate _imageDelegate;
+  LinkDelegate _linkDelegate;
   ZefyrScope _scope;
   ZefyrThemeData _themeData;
   GlobalKey<ZefyrToolbarState> _toolbarKey;
@@ -130,6 +138,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
   void initState() {
     super.initState();
     _imageDelegate = widget.imageDelegate;
+    _linkDelegate = widget.linkDelegate;
   }
 
   @override
@@ -141,6 +150,10 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
     if (widget.imageDelegate != oldWidget.imageDelegate) {
       _imageDelegate = widget.imageDelegate;
       _scope.imageDelegate = _imageDelegate;
+    }
+    if (widget.linkDelegate != oldWidget.linkDelegate) {
+      _linkDelegate = widget.linkDelegate;
+      _scope.linkDelegate = _linkDelegate;
     }
   }
 
@@ -157,6 +170,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       _scope = ZefyrScope.editable(
         mode: widget.mode,
         imageDelegate: _imageDelegate,
+        linkDelegate: _linkDelegate,
         controller: widget.controller,
         focusNode: widget.focusNode,
         focusScope: FocusScope.of(context),

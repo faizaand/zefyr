@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -52,7 +53,7 @@ class _ZefyrLineState extends State<ZefyrLine> {
       assert(widget.style != null);
       content = ZefyrRichText(
         node: widget.node,
-        text: buildText(context),
+        text: buildText(context, scope),
       );
     }
 
@@ -119,20 +120,32 @@ class _ZefyrLineState extends State<ZefyrLine> {
     }
   }
 
-  TextSpan buildText(BuildContext context) {
+  TextSpan buildText(BuildContext context, ZefyrScope scope) {
     final theme = ZefyrTheme.of(context);
     final children = widget.node.children
-        .map((node) => _segmentToTextSpan(node, theme))
+        .map((node) => _segmentToTextSpan(node, theme, scope))
         .toList(growable: false);
     return TextSpan(style: widget.style, children: children);
   }
 
-  TextSpan _segmentToTextSpan(Node node, ZefyrThemeData theme) {
+  TextSpan _segmentToTextSpan(
+      Node node, ZefyrThemeData theme, ZefyrScope scope) {
     final TextNode segment = node;
     final attrs = segment.style;
 
+    TapGestureRecognizer recognizer;
+    if (attrs.contains(NotusAttribute.link)) {
+      recognizer = TapGestureRecognizer();
+      recognizer.onTap = () {
+        if (scope.linkDelegate?.onLinkTap != null) {
+          scope.linkDelegate.onLinkTap(attrs.get(NotusAttribute.link).value);
+        }
+      };
+    }
+
     return TextSpan(
       text: segment.value,
+      recognizer: recognizer,
       style: _getTextStyle(attrs, theme),
     );
   }
