@@ -15,7 +15,7 @@ void main() {
 
 // Create a Focus Intent that does nothing
 class FakeFocusIntent extends Intent {
-  const FakeFocusIntent();
+  const FakeFocusIntent() : super(const ValueKey('foo'));
 }
 
 class ZefyrApp extends StatelessWidget {
