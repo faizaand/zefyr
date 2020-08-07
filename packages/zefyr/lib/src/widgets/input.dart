@@ -185,6 +185,10 @@ class InputConnectionController implements TextInputClient {
   TextInputConnection _textInputConnection;
   TextEditingValue _lastKnownRemoteTextEditingValue;
 
+  // TODO: figure out if we need to support autofill
+  @override
+  AutofillScope get currentAutofillScope => null;
+
   @override
   void showAutocorrectionPromptRect(int start, int end) {
     // TODO: implement showAutocorrectionPromptRect

@@ -42,6 +42,9 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
 
   TextSelectionControls get controls => _controls;
 
+  final ClipboardStatusNotifier _clipboardStatus =
+      kIsWeb ? null : ClipboardStatusNotifier();
+
   /// Global position of last TapDown event.
   Offset _lastTapDownPosition;
 
@@ -51,8 +54,6 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
   OverlayState _overlay;
   OverlayEntry _toolbar;
   AnimationController _toolbarController;
-
-  dynamic _clipboardStatus;
 
   ZefyrScope _scope;
 
@@ -80,6 +81,7 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
         opacity: toolbarOpacity,
         child: _SelectionToolbar(
           selectionOverlay: this,
+          clipboardStatus: _clipboardStatus,
         ),
       ),
     );
@@ -591,9 +593,11 @@ class _SelectionToolbar extends StatefulWidget {
   const _SelectionToolbar({
     Key key,
     @required this.selectionOverlay,
+    @required this.clipboardStatus,
   }) : super(key: key);
 
   final ZefyrSelectionOverlayState selectionOverlay;
+  final ClipboardStatusNotifier clipboardStatus;
 
   @override
   _SelectionToolbarState createState() => _SelectionToolbarState();
@@ -659,6 +663,7 @@ class _SelectionToolbarState extends State<_SelectionToolbar> {
       midpoint,
       endpoints,
       widget.selectionOverlay,
+      widget.clipboardStatus,
     );
     return CompositedTransformFollower(
       link: block.layerLink,
